@@ -1,13 +1,14 @@
 ﻿using CommonLayer.User;
 using RepositoryLayer.Interface;
+//using RepositoryLayer.Interface;
 using RepositoryLayer.Services;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace RepositoryLayer.Class
 {
-
 
     public class UserRL : IUserRL
     {
@@ -38,5 +39,63 @@ namespace RepositoryLayer.Class
                 throw e;
             }
         }
+
+
+        public bool Login(UserLogin userLogin)
+        {
+            try
+            {
+                User user = new User();
+                var result = dbContext.Users.Where(x => x.Email == userLogin.Email && x.password == userLogin.Password).FirstOrDefault();
+                if (result != null)
+                    return true;
+                else
+
+                    return false;
+
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+
+        }
+        //public void ResetPassword(string Email, string Password, string cpassword)
+        //{
+        //    try
+        //    {
+        //        User user = new User();
+        //        var result = dbContext.Users.FirstOrDefault(x => x.Email == Email);
+        //        if (result != null)
+        //        {
+        //            result.password = Password;
+        //            result.cpassword = cpassword;
+        //            dbContext.SaveChanges();
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw e;
+        //    }
+        //}
+
+        //public bool ForgetPassword(string Email)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public bool ForgetPassword(string Email)
+        //{
+        //    try
+        //    {
+        //        User user=new User();
+        //        var result = dbContext.Users.Where().FirstOrDefault();
+        //    }
+        //}
     }
 }
+
+
+
+

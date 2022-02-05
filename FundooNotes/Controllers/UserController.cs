@@ -1,5 +1,7 @@
 ﻿using BusinessLayer.Interface;
+using CommonLayer;
 using CommonLayer.User;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryLayer.Services;
 using System;
@@ -33,5 +35,39 @@ namespace FundooNotes.Controllers
                 throw e;
             }
         }
+        [HttpPost("login")]
+        public ActionResult Login(UserLogin login)
+        {
+            try
+            {
+                this.userBL.Login(login);
+                return this.Ok(new { success = true, message = $"Login Successful {login.Email}" });
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        //[Authorize]
+        //[HttpPut("resetpassword")]
+        //public ActionResult ResetPassword(string Email, string Password, string cpassword)
+        //{
+        //    try
+        //    {
+        //        if (Password != cpassword)
+        //        {
+        //            return BadRequest(new { success = false, message = $"Paswords are not equal" });
+        //        }
+        //        // var identity = User.Identity as ClaimsIdentity 
+        //        this.userBL.ResetPassword(Email, Password, cpassword);
+        //        return this.Ok(new { success = true, message = $"Password changed Successfully {Email}" });
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw e;
+        //    }
+        //}
     }
 }
+
+    
