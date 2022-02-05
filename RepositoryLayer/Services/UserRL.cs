@@ -61,24 +61,24 @@ namespace RepositoryLayer.Class
             }
 
         }
-        //public void ResetPassword(string Email, string Password, string cpassword)
-        //{
-        //    try
-        //    {
-        //        User user = new User();
-        //        var result = dbContext.Users.FirstOrDefault(x => x.Email == Email);
-        //        if (result != null)
-        //        {
-        //            result.password = Password;
-        //            result.cpassword = cpassword;
-        //            dbContext.SaveChanges();
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        throw e;
-        //    }
-        //}
+        public void ResetPassword(string Email, string Password, string cpassword)
+        {
+            try
+            {
+                User user = new User();
+                var result = dbContext.Users.FirstOrDefault(x => x.Email == Email);
+                if (result != null)
+                {
+                    result.password = Password;
+                    result.cpassword = cpassword;
+                    dbContext.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
 
         //public bool ForgetPassword(string Email)
         //{

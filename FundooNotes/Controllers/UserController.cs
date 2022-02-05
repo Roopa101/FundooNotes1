@@ -48,25 +48,25 @@ namespace FundooNotes.Controllers
                 throw e;
             }
         }
-        //[Authorize]
-        //[HttpPut("resetpassword")]
-        //public ActionResult ResetPassword(string Email, string Password, string cpassword)
-        //{
-        //    try
-        //    {
-        //        if (Password != cpassword)
-        //        {
-        //            return BadRequest(new { success = false, message = $"Paswords are not equal" });
-        //        }
-        //        // var identity = User.Identity as ClaimsIdentity 
-        //        this.userBL.ResetPassword(Email, Password, cpassword);
-        //        return this.Ok(new { success = true, message = $"Password changed Successfully {Email}" });
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        throw e;
-        //    }
-        //}
+        [Authorize]
+        [HttpPut("resetpassword")]
+        public ActionResult ResetPassword(string Email, string Password, string cpassword)
+        {
+            try
+            {
+                if (Password != cpassword)
+                {
+                    return BadRequest(new { success = false, message = $"Paswords are not equal" });
+                }
+                // var identity = User.Identity as ClaimsIdentity 
+                this.userBL.ResetPassword(Email, Password, cpassword);
+                return this.Ok(new { success = true, message = $"Password changed Successfully {Email}" });
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
     }
 }
 

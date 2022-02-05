@@ -38,17 +38,17 @@ namespace BusinessLayer.Class
             }
         }
 
-        //public void ResetPassword(string Email, string Password, string cpassword)
-        //{
-        //    try
-        //    {
-        //        userRL.ResetPassword(Email, Password, cpassword);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        throw e;
-        //    }
-        //}
+        public void ResetPassword(string Email, string Password, string cpassword)
+        {
+            try
+            {
+                userRL.ResetPassword(Email, Password, cpassword);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
     }
 }
     
