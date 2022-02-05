@@ -12,7 +12,7 @@ namespace RepositoryLayer.Interface
         public bool Login(UserLogin userLogin);
         void ResetPassword(string Email, string Password, string cpassword);
 
-        // public bool ForgetPassword(string Email);
+        public void ForgetPassword(string Email);
     }
 
 }

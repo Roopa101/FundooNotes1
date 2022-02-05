@@ -49,6 +49,19 @@ namespace BusinessLayer.Class
                 throw e;
             }
         }
+
+        
+        public void ForgetPassword(string Email)
+        {
+            try
+            {
+                userRL.Equals(Email);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
     }
 }
     

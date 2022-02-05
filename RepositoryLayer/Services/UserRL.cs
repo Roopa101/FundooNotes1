@@ -80,19 +80,19 @@ namespace RepositoryLayer.Class
             }
         }
 
-        //public bool ForgetPassword(string Email)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public void ForgetPassword(string Email)
+        {
+            try
+            {
+                User user = new User();
+                var result = dbContext.Users.Where(x => x.Email == Email).FirstOrDefault();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
 
-        //public bool ForgetPassword(string Email)
-        //{
-        //    try
-        //    {
-        //        User user=new User();
-        //        var result = dbContext.Users.Where().FirstOrDefault();
-        //    }
-        //}
+        }
     }
 }
 
