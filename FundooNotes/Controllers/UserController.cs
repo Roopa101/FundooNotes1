@@ -35,19 +35,33 @@ namespace FundooNotes.Controllers
                 throw e;
             }
         }
-        [HttpPost("login")]
-        public ActionResult Login(UserLogin login)
+        //[HttpPost("login")]
+        //public ActionResult Login(UserLogin login)
+        //{
+        //    try
+        //    {
+        //        this.userBL.Login(login);
+        //        return this.Ok(new { success = true, message = $"Login Successful {login.Email}" });
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw e;
+        //    }
+        //}
+        [HttpPost("UserLogin")]
+        public ActionResult Login(UserLogin userLogin)
         {
             try
             {
-                this.userBL.Login(login);
-                return this.Ok(new { success = true, message = $"Login Successful {login.Email}" });
+                string result = this.userBL.Login(userLogin);
+                return this.Ok(new { success = true, message = $"LogIn Successful {userLogin.Email}, data = {result}" });
             }
             catch (Exception e)
             {
                 throw e;
             }
         }
+
         [Authorize]
         [HttpPut("resetpassword")]
         public ActionResult ResetPassword(string Email, string Password, string cpassword)

@@ -25,7 +25,19 @@ namespace BusinessLayer.Class
                 throw e;
             }
         }
-        public bool Login(UserLogin userlogin)
+        //public bool Login(UserLogin userlogin)
+        //{
+        //    try
+        //    {
+        //        return userRL.Login(userlogin);
+        //    }
+        //    catch (Exception e)
+        //    {
+
+        //        throw e;
+        //    }
+        //}
+        public string Login(UserLogin userlogin)
         {
             try
             {
@@ -33,7 +45,6 @@ namespace BusinessLayer.Class
             }
             catch (Exception e)
             {
-
                 throw e;
             }
         }
