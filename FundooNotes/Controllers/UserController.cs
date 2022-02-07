@@ -7,6 +7,7 @@ using RepositoryLayer.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace FundooNotes.Controllers
@@ -22,7 +23,7 @@ namespace FundooNotes.Controllers
             this.userBL = userBL;
             this.fundooDbContext = fundooDB;
         }
-        [HttpPost]
+        [HttpPost("UserRegistration")]
         public ActionResult RegisterUser(UserPostModel userPostModel)
         {
             try
@@ -48,13 +49,29 @@ namespace FundooNotes.Controllers
         //        throw e;
         //    }
         //}
-        [HttpPost("UserLogin")]
+        //[HttpPost("UserLogin")]
+        //public ActionResult Login(UserLogin userLogin)
+        //{
+        //    try
+        //    {
+        //        string result = this.userBL.Login(userLogin);
+        //        return this.Ok(new { success = true, message = $"LogIn Successful {userLogin.Email}, Token = {result}" });
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw e;
+        //    }
+        //}
+        [HttpPost("login")]
         public ActionResult Login(UserLogin userLogin)
         {
             try
             {
                 string result = this.userBL.Login(userLogin);
-                return this.Ok(new { success = true, message = $"LogIn Successful {userLogin.Email}, data = {result}" });
+                if (result != null)
+                    return this.Ok(new { success = true, message = $"LogIn Successful {userLogin.Email}, Token = {result}" });
+                else
+                    return this.BadRequest(new { Success = false, message = "Invalid Username and Password" });
             }
             catch (Exception e)
             {
@@ -63,17 +80,19 @@ namespace FundooNotes.Controllers
         }
 
         [Authorize]
-        [HttpPut("resetpassword")]
+        [HttpPut("Reset Password")]
         public ActionResult ResetPassword(string Email, string Password, string cpassword)
         {
             try
             {
+                
+                var UserEmailObject = User.Claims.First(x => x.Type == "Email").Value;
                 if (Password != cpassword)
                 {
-                    return BadRequest(new { success = false, message = $"Paswords are not equal" });
+                    return this.BadRequest(new { success = false, message = $"Password are not same" });
                 }
-                // var identity = User.Identity as ClaimsIdentity 
-                this.userBL.ResetPassword(Email, Password, cpassword);
+
+                this.userBL.ResetPassword(UserEmailObject, Password, cpassword);
                 return this.Ok(new { success = true, message = $"Password changed Successfully {Email}" });
             }
             catch (Exception e)
@@ -81,7 +100,7 @@ namespace FundooNotes.Controllers
                 throw e;
             }
         }
-        
+
         [HttpPut("forgetpassword")]
         public ActionResult ForgetPassword(string Email)
         {
@@ -90,15 +109,15 @@ namespace FundooNotes.Controllers
             {
                 this.userBL.ForgetPassword(Email);
 
-                return Ok(new { message = "Token sent succesfully.Please check your email for password reset" });
+                return this.Ok(new { success = true, message = $"The link has been sent to {Email}, please check your email to reset your password..." });
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                throw e;
             }
 
         }
-
+        
     }
 }
 

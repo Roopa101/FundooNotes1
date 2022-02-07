@@ -11,10 +11,10 @@ namespace RepositoryLayer.Interface
         void RegisterUser(UserPostModel userPostModel);
         // public bool Login(UserLogin userLogin);
         string Login(UserLogin userLogin);
-
+        //public string GenerateJwtToken(string Email);
         void ResetPassword(string Email, string Password, string cpassword);
-
         public void ForgetPassword(string Email);
+       
     }
 
 }

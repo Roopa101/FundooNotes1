@@ -1,4 +1,5 @@
 ﻿using CommonLayer.User;
+using Experimental.System.Messaging;
 using Microsoft.IdentityModel.Tokens;
 using RepositoryLayer.Interface;
 //using RepositoryLayer.Interface;
@@ -31,7 +32,9 @@ namespace RepositoryLayer.Class
                 user.PhoneNumber = userPostModel.PhoneNumber;
                 user.address = userPostModel.address;
                 user.Email = userPostModel.Email;
-                user.password = userPostModel.password;
+               // StringCipher.Encrypt(userPostModel.password);
+                user.password= StringCipher.Encrypt(userPostModel.password);
+
                 user.cpassword = userPostModel.cpassword;
                 user.registeredDate = DateTime.Now;
                 dbContext.Users.Add(user);
@@ -133,7 +136,11 @@ namespace RepositoryLayer.Class
             }
 
         }
+       
+        
+
     }
+    
 }
 
 
