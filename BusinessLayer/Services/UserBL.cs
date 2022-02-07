@@ -74,17 +74,18 @@ namespace BusinessLayer.Class
             }
         }
 
-        //public string EncryptPassword(string Password)
-        //{
-        //    try
-        //    {
-        //        return userRL.EncryptPassword(Password);
-        //    }
-        //    catch(Exception e)
-        //    {
-        //        throw e;
-        //    }
-        //}
+        public List<User> GetAllUsers()
+        {
+            try
+            {
+                return userRL.GetAllUsers();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
     }
 }
     

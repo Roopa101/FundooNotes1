@@ -85,7 +85,7 @@ namespace FundooNotes.Controllers
         {
             try
             {
-                
+
                 var UserEmailObject = User.Claims.First(x => x.Type == "Email").Value;
                 if (Password != cpassword)
                 {
@@ -117,7 +117,20 @@ namespace FundooNotes.Controllers
             }
 
         }
-        
+        [HttpGet("getallusers")]
+        public ActionResult GetAllUsers()
+        {
+            try
+            {
+                var result = this.userBL.GetAllUsers();
+                return this.Ok(new { success = true, message = $"Below are the User data", data = result });
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+        }
     }
 }
 

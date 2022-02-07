@@ -14,7 +14,9 @@ namespace RepositoryLayer.Interface
         //public string GenerateJwtToken(string Email);
         void ResetPassword(string Email, string Password, string cpassword);
         public void ForgetPassword(string Email);
-       
+        List<User> GetAllUsers();
+
+
     }
 
 }
