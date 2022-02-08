@@ -62,11 +62,11 @@ namespace BusinessLayer.Class
         }
 
         
-        public void ForgetPassword(string Email)
+        public bool ForgetPassword(string Email)
         {
             try
             {
-                userRL.Equals(Email);
+              return userRL.ForgetPassword(Email);
             }
             catch (Exception e)
             {

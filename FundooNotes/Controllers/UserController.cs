@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.Interface;
 using CommonLayer;
 using CommonLayer.User;
+using IdentityModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryLayer.Services;
@@ -79,21 +80,28 @@ namespace FundooNotes.Controllers
             }
         }
 
-        [Authorize]
+        [AllowAnonymous]
         [HttpPut("Reset Password")]
         public ActionResult ResetPassword(string Email, string Password, string cpassword)
         {
             try
             {
-
-                var UserEmailObject = User.Claims.First(x => x.Type == "Email").Value;
-                if (Password != cpassword)
+                if(Password != cpassword)
                 {
-                    return this.BadRequest(new { success = false, message = $"Password are not same" });
+                    return this.BadRequest(new { success = false, message = $"Passwords are not same" });
+                }
+                var Identity = User.Identity as ClaimsIdentity;
+                //var UserEmailObject = User.Claims.First(x => x.Type == "Email").Value;
+                if (Identity != null)
+                {
+                    IEnumerable<Claim> claims = Identity.Claims;
+                    var UserEmailObject = claims.Where(p => p.Type == @"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress").FirstOrDefault()?.Value;
+                    this.userBL.ResetPassword(Email, Password,cpassword);
+                    return Ok(new { success = true, message = "Password Changed Sucessfully", email = $"{UserEmailObject}" });
                 }
 
-                this.userBL.ResetPassword(UserEmailObject, Password, cpassword);
-                return this.Ok(new { success = true, message = $"Password changed Successfully {Email}" });
+              //  this.userBL.ResetPassword(UserEmailObject, Password, cpassword);
+                return this.BadRequest(new { success = false, message = $"Password changed UnSuccessfully {Email}" });
             }
             catch (Exception e)
             {

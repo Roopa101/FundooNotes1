@@ -12,7 +12,7 @@ namespace BusinessLayer.Interface
         string Login(UserLogin userLogin);
 
         void ResetPassword(string Email, string Password, string cpassword);
-        public void ForgetPassword(string Email);
+        public bool ForgetPassword(string Email);
         List<User> GetAllUsers();
 
     }

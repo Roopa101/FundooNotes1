@@ -72,6 +72,7 @@ namespace RepositoryLayer.Class
             try
             {
                 User user = new User();
+
                 var result = dbContext.Users.Where(x => x.Email == userLogin.Email && x.password == userLogin.Password).FirstOrDefault();
                 if (result != null)
                     return GenerateJWTToken(userLogin.Email, user.userId);
@@ -82,6 +83,30 @@ namespace RepositoryLayer.Class
             {
                 throw e;
             }
+        }
+        private static string GenerateToken(string Email)
+        {
+            if (Email == null)
+            {
+                return null;
+            }
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenKey = Encoding.ASCII.GetBytes("THIS_IS_MY_KEY_TO_GENERATE_TOKEN");
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim("Email", Email),
+                }),
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials =
+                new SigningCredentials(
+                    new SymmetricSecurityKey(tokenKey),
+                    SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
         private static string GenerateJWTToken(string Email, int userId)
         {
@@ -123,16 +148,49 @@ namespace RepositoryLayer.Class
             }
         }
 
-        public void ForgetPassword(string Email)
+        public bool ForgetPassword(string Email)
         {
             try
             {
-                User user = new User();
-                var result = dbContext.Users.Where(x => x.Email == Email).FirstOrDefault();
+                var checkemail = dbContext.Users.FirstOrDefault(e => e.Email == Email);
+                //var checkemail = dbContex.Users.FirstOrDefault(e => e.Email == email);
+                if (checkemail != null)
+                {
+                    MessageQueue queue;
+                    //ADD MESSAGE TO QUEUE
+                    if (MessageQueue.Exists(@".\Private$\FundooQueue"))
+                    {
+                        queue = new MessageQueue(@".\Private$\FundooQueue");
+                    }
+                    else
+                    {
+                        queue = MessageQueue.Create(@".\Private$\FundooQueue");
+                    }
+
+                    Message MyMessage = new Message();
+                    MyMessage.Formatter = new BinaryMessageFormatter();
+                    MyMessage.Body = GenerateJWTToken(Email,checkemail.userId);
+                    MyMessage.Label = "Forget Password Email";
+                    queue.Send(MyMessage);
+                    Message msg = queue.Receive();
+                    msg.Formatter = new BinaryMessageFormatter();
+                    EmailService.sendMail(Email, msg.Body.ToString());
+                    queue.ReceiveCompleted += new ReceiveCompletedEventHandler(msmqQueue_ReceiveCompleted);
+
+                    queue.BeginReceive();
+                    queue.Close();
+                    return true;
+
+                }
+                else
+                {
+                    return false;
+                }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                throw e;
+
+                throw;
             }
 
         }
@@ -148,6 +206,26 @@ namespace RepositoryLayer.Class
                 throw e;
             }
         }
+        private void msmqQueue_ReceiveCompleted(object sender, ReceiveCompletedEventArgs e)
+        {
+            try
+            {
+                MessageQueue queue = (MessageQueue)sender;
+                Message msg = queue.EndReceive(e.AsyncResult);
+                EmailService.sendMail(e.Message.ToString(), GenerateToken(e.Message.ToString()));
+                queue.BeginReceive();
+            }
+            catch (MessageQueueException ex)
+            {
+                if (ex.MessageQueueErrorCode == MessageQueueErrorCode.AccessDenied)
+                {
+                    Console.WriteLine("Access is denied. " +
+                        "Queue might be a system queue.");
+                }
+                // Handle other sources of MessageQueueException.
+            }
+        }
+
     }
     
 }

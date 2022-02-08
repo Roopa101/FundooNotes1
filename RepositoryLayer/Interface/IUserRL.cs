@@ -13,7 +13,7 @@ namespace RepositoryLayer.Interface
         string Login(UserLogin userLogin);
         //public string GenerateJwtToken(string Email);
         void ResetPassword(string Email, string Password, string cpassword);
-        public void ForgetPassword(string Email);
+        public bool ForgetPassword(string Email);
         List<User> GetAllUsers();
 
 
