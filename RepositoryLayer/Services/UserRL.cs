@@ -35,8 +35,9 @@ namespace RepositoryLayer.Class
                // StringCipher.Encrypt(userPostModel.password);
                 user.password= StringCipher.Encrypt(userPostModel.password);
 
-                user.cpassword = userPostModel.cpassword;
+                user.cpassword = StringCipher.Encrypt(userPostModel.cpassword); ;
                 user.registeredDate = DateTime.Now;
+                user.modifiedDate = DateTime.Now;
                 dbContext.Users.Add(user);
                 dbContext.SaveChanges();
             }
@@ -139,6 +140,7 @@ namespace RepositoryLayer.Class
                 {
                     result.password = Password;
                     result.cpassword = cpassword;
+                    result.modifiedDate = DateTime.Now;
                     dbContext.SaveChanges();
                 }
             }
@@ -187,10 +189,10 @@ namespace RepositoryLayer.Class
                     return false;
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
-                throw;
+                throw e;
             }
 
         }

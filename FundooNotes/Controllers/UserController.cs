@@ -82,32 +82,37 @@ namespace FundooNotes.Controllers
 
         [AllowAnonymous]
         [HttpPut("Reset Password")]
-        public ActionResult ResetPassword(string Email, string Password, string cpassword)
+        public ActionResult ResetPassword(string Password, string cpassword)
         {
             try
             {
-                if(Password != cpassword)
+                if (Password != cpassword)
                 {
-                    return this.BadRequest(new { success = false, message = $"Passwords are not same" });
+                    return BadRequest(new { success = false, message = $"Paswords are not same" });
                 }
-                var Identity = User.Identity as ClaimsIdentity;
-                //var UserEmailObject = User.Claims.First(x => x.Type == "Email").Value;
-                if (Identity != null)
+                var identity = User.Identity as ClaimsIdentity;
+                if (identity != null)
                 {
-                    IEnumerable<Claim> claims = Identity.Claims;
+                    IEnumerable<Claim> claims = identity.Claims;
                     var UserEmailObject = claims.Where(p => p.Type == @"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress").FirstOrDefault()?.Value;
-                    this.userBL.ResetPassword(Email, Password,cpassword);
-                    return Ok(new { success = true, message = "Password Changed Sucessfully", email = $"{UserEmailObject}" });
+                    if (UserEmailObject != null)
+                    {
+                        this.userBL.ResetPassword(UserEmailObject, Password, cpassword);
+                        return Ok(new { success = true, message = "Password Changed Sucessfully" });
+                    }
+                    else
+                    {
+                        return this.BadRequest(new { success = false, message = $"Password not changed Successfully" });
+                    }
                 }
-
-              //  this.userBL.ResetPassword(UserEmailObject, Password, cpassword);
-                return this.BadRequest(new { success = false, message = $"Password changed UnSuccessfully {Email}" });
+                return this.BadRequest(new { success = false, message = $"Password not changed Successfully" });
             }
             catch (Exception e)
             {
                 throw e;
             }
         }
+    
 
         [HttpPut("forgetpassword")]
         public ActionResult ForgetPassword(string Email)
@@ -115,9 +120,17 @@ namespace FundooNotes.Controllers
 
             try
             {
-                this.userBL.ForgetPassword(Email);
 
-                return this.Ok(new { success = true, message = $"The link has been sent to {Email}, please check your email to reset your password..." });
+                var result = fundooDbContext.Users.FirstOrDefault(x => x.Email == Email);
+                if (result == null)
+                {
+                    return this.BadRequest(new { success = false, message = "Email is invalid" });
+                }
+                else
+                {
+                    this.userBL.ForgetPassword(Email);
+                    return this.Ok(new { success = true, message = "Token sent succesfully to email for password reset" });
+                }
             }
             catch (Exception e)
             {
